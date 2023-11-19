@@ -1,0 +1,59 @@
+server:
+  port: 8080
+  servlet:
+    context-path: /gildra-game
+
+management:
+  endpoint:
+    health:
+      show-details: "always"
+  endpoints:
+    web:
+      base-path: /
+      exposure:
+        include: health, info
+
+logging:
+  level:
+    org:
+      springframework: INFO
+
+springdoc:
+  packagesToScan: com.gildra.players.controller
+  title: gildra-v1
+  description: "Microservice to control all data that is entering the DB"
+  writer-with-order-by-keys: true
+
+#If you use a database then uncomment below lines and update db properties accordingly
+spring:
+  config:
+    import: "optional:configtree:/mnt/secrets/${{ values.product }}/"
+  application:
+    name: gildra
+  cloud:
+    config:
+      enabled: false
+  profiles:
+    active: ${ENVIRONMENT:local}
+  main:
+    allow-bean-definition-overriding: true
+  datasource:
+    platform: postgresqllocal
+    driver-class-name: org.postgresql.Driver
+    url: jdbc:postgresql://localhost:30019/gildra?currentSchema=gildra_data
+    username: exe_gildra
+    password: g1Id4aC09u
+  jpa:
+    show-sql: true
+    hibernate.ddl-auto: update
+    hibernate.id.new_generator_mappings: true
+    hibernate.use-new-id-generator-mappings: true
+    hbm2ddl.auto: validate
+    properties:
+      hibernate:
+        dialect: org.hibernate.dialect.PostgreSQLDialect
+        default_schema: gildra
+        format_sql: true
+        generate_statistics: false
+  flyway:
+    enabled: false
